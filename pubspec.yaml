@@ -1,0 +1,24 @@
+name: ysdad_connexion
+description: "Module Ysdad « Connexion » : page de connexion réutilisable (Google, Apple, courriel + mot de passe) avec Firebase Auth."
+version: 1.0.0
+publish_to: none
+repository: https://github.com/4YsDad/ysdad-module-connexion
+
+environment:
+  sdk: ^3.10.0
+  flutter: ">=3.29.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ">=4.2.0 <6.0.0"
+  firebase_auth: ">=6.1.0 <8.0.0"
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ">=7.0.1 <9.0.0"
+  crypto: ^3.0.6
+  shared_preferences: ^2.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

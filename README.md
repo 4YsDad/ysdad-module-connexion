@@ -5,6 +5,19 @@ Page de connexion prête à l'emploi, la même pour toutes vos applis :
 Style inspiré de Ciné-surveillance (fond, logo, nom en majuscules, champs arrondis). Fonctionne sur Android, iPhone et en version web.
 Apple s'affiche seulement sur iPhone, Mac et web (sur Android : option `appleOnAndroid: true`).
 
+## 0. (Recommandé) Dépendance Git plutôt que copie
+
+Dans `pubspec.yaml` de l'appli :
+```yaml
+dependencies:
+  ysdad_connexion:
+    git:
+      url: https://github.com/4YsDad/ysdad-module-connexion.git
+      ref: main
+```
+Puis `flutter pub get` et `import 'package:ysdad_connexion/ysdad_connexion.dart';`.
+Les étapes 1 et 2 ci-dessous ne sont alors plus nécessaires (Firebase reste à brancher : étapes 3 à 6).
+
 ## 1. Copier 1 fichier dans votre projet
 - `lib/ysdad_connexion.dart` → dans le dossier `lib/` du projet
 
