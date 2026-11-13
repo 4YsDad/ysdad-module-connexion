@@ -1,6 +1,6 @@
 name: ysdad_connexion
 description: "Module Ysdad « Connexion » : page de connexion réutilisable (Google, Apple, courriel + mot de passe) avec Firebase Auth."
-version: 1.0.0
+version: 1.1.0
 publish_to: none
 repository: https://github.com/4YsDad/ysdad-module-connexion
 

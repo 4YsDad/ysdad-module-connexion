@@ -84,3 +84,20 @@ Voir `exemple_integration.dart` pour un exemple complet.
 - Ne pas bloquer en attendant la vérification du courriel : `requireEmailVerification: false`
 - Le dernier courriel saisi est retenu automatiquement.
 - Messages d'erreur en français réutilisables : `ysdadMessageErreur(e)`.
+
+### Emplacements libres (v1.1)
+
+| Option | Rôle |
+|---|---|
+| `entete` | Widget affiché au-dessus du nom (mascotte, illustration). Remplace `logoAsset`. |
+| `piedDePage` | Widget sous le formulaire, dans la zone défilante (ex. bouton « Compte démo »). |
+| `afficherNomAppli` | `false` pour cacher le nom en majuscules. |
+| `courrielOuvertParDefaut` | `true` pour afficher tout de suite le formulaire courriel. |
+
+```dart
+YsdadConnexionConfig(
+  appName: 'Maître de chantier',
+  entete: Image.asset('assets/images/mascotte.png', height: 220),
+  piedDePage: FilledButton(onPressed: entrerDemo, child: const Text('Compte démo')),
+)
+```

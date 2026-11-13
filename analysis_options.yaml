@@ -1,4 +1,5 @@
 analyzer:
   exclude:
     - build/**
+    - exemple_integration.dart # exemple à copier dans une appli, pas compilé ici
 include: package:flutter_lints/flutter.yaml

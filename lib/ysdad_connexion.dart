@@ -28,6 +28,10 @@ class YsdadConnexionConfig {
     this.requireEmailVerification = true,
     this.googleServerClientId,
     this.googleClientId,
+    this.entete,
+    this.piedDePage,
+    this.afficherNomAppli = true,
+    this.courrielOuvertParDefaut = false,
   });
 
   /// Nom affiché sous le logo (ex. « Trouve-tout »).
@@ -62,6 +66,21 @@ class YsdadConnexionConfig {
 
   /// iOS/macOS : CLIENT_ID de GoogleService-Info.plist, si nécessaire.
   final String? googleClientId;
+
+  /// Emplacement libre au-dessus du nom de l'appli (ex. mascotte, illustration).
+  /// Remplace logoAsset s'il est fourni.
+  final Widget? entete;
+
+  /// Emplacement libre sous le formulaire, dans la même zone défilante
+  /// (ex. bouton « Compte démo », mentions légales, lien d'aide).
+  final Widget? piedDePage;
+
+  /// Afficher le nom de l'appli en majuscules sous le logo / l'en-tête.
+  final bool afficherNomAppli;
+
+  /// Montrer tout de suite le formulaire courriel + mot de passe
+  /// (sinon un bouton « Utiliser un courriel » le dévoile).
+  final bool courrielOuvertParDefaut;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -160,12 +179,30 @@ String ysdadMessageErreur(Object e) {
         return 'Par sécurité, reconnectez-vous puis réessayez.';
       case 'missing-email':
         return 'Entrez votre courriel.';
+      case 'missing-password':
+        return 'Entrez votre mot de passe.';
+      case 'user-mismatch':
+        return 'Ce compte ne correspond pas à l\'utilisateur connecté.';
+      case 'invalid-api-key':
+      case 'app-not-authorized':
+      case 'configuration-not-found':
+        return 'La connexion n\'est pas encore configurée pour cette appli. Contactez le soutien.';
+      case 'internal-error':
+        return 'Erreur du service de connexion. Réessayez dans un instant.';
+      case 'credential-already-in-use':
+        return 'Ce compte est déjà lié à un autre utilisateur.';
+      case 'expired-action-code':
+      case 'invalid-action-code':
+        return 'Ce lien est expiré ou a déjà servi. Demandez-en un nouveau.';
       default:
         return 'Erreur de connexion (${e.code}). Réessayez.';
     }
   }
   if (e is GoogleSignInException) {
     if (e.code == GoogleSignInExceptionCode.canceled) return 'Connexion annulée.';
+    if (e.code == GoogleSignInExceptionCode.clientConfigurationError) {
+      return 'Connexion Google mal configurée (empreinte SHA ou client Web manquant).';
+    }
     return 'Connexion Google impossible. Réessayez.';
   }
   if (e is SignInWithAppleAuthorizationException) {
@@ -497,7 +534,8 @@ class _YsdadLoginPageState extends State<YsdadLoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final montrerCourriel = c.allowEmail && (_voirCourriel || (!c.showGoogle && !_appleSupporte));
+    final montrerCourriel =
+        c.allowEmail && (_voirCourriel || c.courrielOuvertParDefaut || (!c.showGoogle && !_appleSupporte));
     return Scaffold(
       backgroundColor: c.backgroundColor,
       body: Stack(fit: StackFit.expand, children: [
@@ -516,13 +554,18 @@ class _YsdadLoginPageState extends State<YsdadLoginPage> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: AutofillGroup(
                         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          if (c.logoAsset != null) Image.asset(c.logoAsset!, height: 150),
+                          if (c.entete != null)
+                            c.entete!
+                          else if (c.logoAsset != null)
+                            Image.asset(c.logoAsset!, height: 150),
                           const SizedBox(height: 8),
-                          Text(c.appName.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 2)),
-                          const SizedBox(height: 20),
+                          if (c.afficherNomAppli) ...[
+                            Text(c.appName.toUpperCase(),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                            const SizedBox(height: 20),
+                          ],
                           if (c.showGoogle) ...[
                             _boutonFournisseur(
                               texte: 'Continuer avec Google',
@@ -577,6 +620,10 @@ class _YsdadLoginPageState extends State<YsdadLoginPage> {
                               ),
                               child: Text(_erreur!, style: const TextStyle(color: Colors.white)),
                             ),
+                          ],
+                          if (c.piedDePage != null) ...[
+                            const SizedBox(height: 16),
+                            c.piedDePage!,
                           ],
                         ]),
                       ),
